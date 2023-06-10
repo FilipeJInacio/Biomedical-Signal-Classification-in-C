@@ -1,6 +1,7 @@
 #include "parser.h"
-#include "read_file.h"
+#include "utility.h"
 #include "defines.h"
+#include "read_file.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,7 +19,7 @@ int run(StringList *PathsList){
     for(StringList *curr = PathsList; curr != NULL; curr = curr->next){
         
         index = mem_treatment(File);
-        readLineFromFile(curr->string, File[index]);
+        // 
 
         printf("%s\n",curr->string);
     }
@@ -28,20 +29,43 @@ int run(StringList *PathsList){
 }
 
 
-void test_parser(char *a){
-    float b = parser(a);
-    printf("%f\n", b);
+
+
+int read(const char* filename) {
+    size_t numNumbers;
+    unsigned short* numbers = readBinaryFile(filename, &numNumbers);
+
+    if (numbers != NULL) {
+        for (size_t i = 0; i < numNumbers; i++) {
+            printf("%hu ", numbers[i]);
+        }
+        printf("\n");
+
+        free(numbers);
+    }
+
+    return 0;
 }
+
+
 
 
 int main()
 {
     StringList *PathsList = NULL;
-    start_from_folder("/mnt/c/Users/fjina/OneDrive/Ambiente de Trabalho/Inesc/Data",&PathsList);
-
+    start_from_folder("/mnt/c/Users/fjina/OneDrive/Ambiente de Trabalho/Inesc/BinData",&PathsList);
+    printf("%li %li %li\n",sizeof(int),sizeof(Data),sizeof(unsigned short*));
     //printStringList(PathsList);
 
-    run(PathsList);
+    for(StringList *curr = PathsList; curr != NULL; curr = curr->next){
+        
+        read(curr->string);
+
+        printf("%s\n",curr->string);
+    }
 
     return 0;
 }
+
+
+

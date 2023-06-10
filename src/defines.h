@@ -11,7 +11,7 @@
 #define SIGNIFICATIVE_POSI 7
 #define FILES_IN_CACHE 5
 #define PATHSIZE 1024
-#define THRESHHOLD 50000
+#define THRESHHOLD 100000
 
 
 #endif

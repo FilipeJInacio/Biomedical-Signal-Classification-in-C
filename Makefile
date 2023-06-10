@@ -1,6 +1,6 @@
 
 CC= gcc
-CFLAGS= -Wall -O3 -g 
+CFLAGS= -pthread -Wall -O3 -g 
 LDFLAGS= -lm
 
 SRCDIR = ./src

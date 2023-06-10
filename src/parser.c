@@ -2,41 +2,43 @@
 #include "defines.h"
 
 #include <stdio.h>
-
 #include <stdlib.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 
-float parser(const char *start)
-{
-    const char *p = start;
-    int i, j;
-    int exp;
-    int frac1, frac2;
-    float ft = 0;
 
-    if (p[20] == '-') // Is the exp negative?
-    {
-        exp = -((p[21] - '0') * 10 + (p[22] - '0')) + 12;
 
-        frac1 = (p[1] - '0');
-        for (i = 3; i < exp; i++) // i = 3 skip -1. in -1.4578 to go to 4
-        {
-            frac1 = 10 * frac1 + (p[i] - '0');
-        }
-
-        frac2 = (p[i] - '0');
-        i++;
-
-        for (j = 0; j < SIGNIFICATIVE - 1; j++, i++)
-        {
-            frac2 = 10 * frac2 + (p[i] - '0');
-        }
-
-        ft = frac1 + 1.0e-4f * frac2;
-    }
-    else
-    {
-        // Not supposed to happen
+unsigned short* readBinaryFile(const char* filename, size_t* numNumbers) {
+    int fd = open(filename, O_RDONLY);
+    if (fd == -1) {
+        perror("Error opening file");
+        return NULL;
     }
 
-    return ft;
+    struct stat sb;
+    if (fstat(fd, &sb) == -1) {
+        perror("Error getting file size");
+        close(fd);
+        return NULL;
+    }
+
+    // Calculate the number of numbers in the file
+    *numNumbers = sb.st_size / sizeof(unsigned short);
+
+    // Map the file into memory
+    unsigned short* numbers = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+    if (numbers == MAP_FAILED) {
+        perror("Error mapping file");
+        close(fd);
+        return NULL;
+    }
+
+    // Close the file descriptor
+    close(fd);
+
+    return numbers;
 }
+
+
